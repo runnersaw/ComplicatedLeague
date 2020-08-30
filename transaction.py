@@ -1,31 +1,26 @@
 
 
 # Possible transaction types.
-DRAFT = "DRAFT"
 PICKUP = "PICKUP"
 DROP = "DROP"
+TRADE = "TRADE"
 
-# Possible statuses
-WAIVER_PICKUP = "Waiver Pickup"
-DRAFT_OPTION = "Drafted Player (Option)"
-DRAFT_EXTENSION = "Drafted Player (Extension)"
-
-def validateType(type):
-	if not isinstance(type, str):
-		raise Exception("Fail", "Unexpected type: " + type) 
-	if type != DRAFT and type != PICKUP and type != DROP:
-		raise Exception("Fail", "Unexpected transaction type: " + type)
+def validateType(transactionType):
+	if not isinstance(transactionType, str):
+		raise Exception("Fail", "Unexpected type: " + transactionType)
+	if transactionType != PICKUP and transactionType != DROP and transactionType != TRADE:
+		raise Exception("Fail", "Unexpected transaction type: " + transactionType)
 
 class Transaction:
-	def __init__(self, type, amount, year):
-		validateType(type)
-		self.type = type
+	def __init__(self, playerName, teamName, transactionType, amount, yearsAgo):
+		self.playerName = playerName
+		self.teamName = teamName
+		validateType(transactionType)
+		self.transactionType = transactionType
 		self.amount = amount
-		self.year = year
+		if yearsAgo < 1 or yearsAgo > 3:
+			raise Exception("Invalid yearsAgo: " + str(yearsAgo))
+		self.yearsAgo = yearsAgo
 
-	def currentStatus(self):
-		# TODO
-		return WAIVER_PICKUP
-
-	def draftedYear(self):
-		return None
+	def __repr__(self):
+		return "Transaction: " + self.playerName + " had " + self.transactionType + " at amount " + str(self.amount) + " to " + self.teamName
