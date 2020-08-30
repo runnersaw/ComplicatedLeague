@@ -1,0 +1,24 @@
+# Get Team Roster (http://complicatedleague.football.cbssports.com/teams/7)
+
+[].slice.call(document.querySelectorAll(".playerLink")).map(element => { return element.innerHTML; }).filter(html => { return !html.includes("<span") });
+
+# Get Team Salary (http://complicatedleague.football.cbssports.com/teams/7)
+
+[].slice.call(document.querySelectorAll(".row1,.row2")).filter(element => { return !element.classList.contains("empty"); }).map(element => { return element.children[12].innerHTML; });
+
+# Get Transactions (http://complicatedleague.football.cbssports.com/transactions/2019/all/all_but_lineup?pageIndex-tableContainer-0=-999)
+
+var rows = [].slice.call(document.querySelectorAll(".sc-68jk80-9"));
+var rowElement = rows.map(element => { return [element.children[1].innerText, element.children[2].children] });
+var rowPlayerStatus = rowElement.flatMap(arr => { return [].slice.call(arr[1]).map(element => { return [arr[0], element.children[0].innerText, element.children[2].innerText.slice(3)]; }); });
+var finalString = rowPlayerStatus.map(arr => { return arr.join(","); }).join("\n");
+console.log(finalString);
+
+# Get Drafts (http://complicatedleague.football.cbssports.com/draft/results/2019:Pre-season)
+
+var teamTables = [].slice.call(document.querySelectorAll(".sc-68jk80-0"));
+var teamsAndTables = teamTables.map(element => { return [element.children[0].children[0].innerText, element.children[1]]; });
+var teamsAndPlayerElements = teamsAndTables.flatMap(arr => { return [].slice.call(arr[1].children).map(element => { return [arr[0], element]; }); });
+var teamsPlayersPositionsAndSalary = teamsAndPlayerElements.map(arr => { return [arr[0], arr[1].children[3].children[0].innerText, arr[1].children[3].children[1].innerText, arr[1].children[4].innerText]; });
+var finalString = teamsPlayersPositionsAndSalary.map(arr => { return arr.join(","); }).join("\n");
+console.log(finalString);
