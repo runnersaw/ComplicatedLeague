@@ -1,14 +1,15 @@
 import csv
 
 class CSVWriter:
-	def __init__(self, teams):
+	def __init__(self, teams, currentYear):
 		self.teams = teams
+		self.currentYear = currentYear
 
 	def writeToCSV(self, filename):
 		with open(filename, "w", newline="") as csvFile:
 			writer = csv.writer(csvFile, delimiter=",")
 
-			writer.writerow(["", "Position", "Status", "Year Drafted", "2018 Cost", "2019 Cost"])
+			writer.writerow(["", "Position", "Status", "Year Drafted", str(self.currentYear - 2) + " Cost",  str(self.currentYear - 1) + " Cost"])
 
 			for team in self.teams:
 				writer.writerow([team.name, team.owner])

@@ -7,7 +7,7 @@ class DraftLoader():
     def __init__(self):
         pass
 
-    def load(self, filename, yearsAgo):
+    def load(self, filename):
         draftEntries = []
         with open(filename) as csvFile:
             reader = csv.reader(csvFile, delimiter=",")

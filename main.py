@@ -14,19 +14,19 @@ if __name__=="__main__":
     currentYear = 2020
 
     transactionLoader = TransactionLoader()
-    oneYearAgoTransactions = transactionLoader.load("data/transactions_2019.csv", 1)
-    twoYearsAgoTransactions = transactionLoader.load("data/transactions_2018.csv", 2)
+    oneYearAgoTransactions = transactionLoader.load("data/transactions_" + str(currentYear - 1) + ".csv", 1)
+    twoYearsAgoTransactions = transactionLoader.load("data/transactions_" + str(currentYear - 2) + ".csv", 2)
 
     draftLoader = DraftLoader()
-    oneYearAgoDraft = draftLoader.load("data/draft_2019.csv", 1)
-    twoYearsAgoDraft = draftLoader.load("data/draft_2018.csv", 2)
+    oneYearAgoDraft = draftLoader.load("data/draft_" + str(currentYear - 1) + ".csv")
+    twoYearsAgoDraft = draftLoader.load("data/draft_" + str(currentYear - 2) + ".csv")
 
     keepersLoader = KeepersLoader()
-    keepers = keepersLoader.load("data/keepers_2019.csv")
+    keepers = keepersLoader.load("data/keepers_" + str(currentYear - 1) + ".csv")
 
     teams = []
     teamLoader = TeamLoader()
-    for teamName, playerNamePositions in teamLoader.load("data/teams_2020.csv"):
+    for teamName, playerNamePositions in teamLoader.load("data/teams_" + str(currentYear) + ".csv"):
         owner = teamOwner(currentTeamName(canonicalName(teamName)))
         players = []
         for playerNamePosition in playerNamePositions:
@@ -40,8 +40,8 @@ if __name__=="__main__":
             else:
                 raise Exception("Fail", "Missing player: " + playerName)
         teams.append(Team(teamName, owner, players))
-    csvWriter = CSVWriter(teams)
-    csvWriter.writeToCSV("out/status_2020.csv")
+    csvWriter = CSVWriter(teams, currentYear)
+    csvWriter.writeToCSV("out/status_" + str(currentYear) + ".csv")
 
     while False:
         player = input("Player?\n")
