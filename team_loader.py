@@ -6,6 +6,7 @@ class TeamLoader():
     def __init__(self):
         pass
 
+    """ Does NOT return canonical names or updated team names """
     def load(self, filename):
         teams = []
         with open(filename) as csvFile:
@@ -16,11 +17,12 @@ class TeamLoader():
                     continue
                 if len(row) < 2:
                     raise Exception("Fail", "Expected row of length 1, got: " + row)
-                teamName = currentTeamName(canonicalName(row[0]))
+                teamName = row[0]
                 players = []
                 for i in range (1, len(row)):
-                    playerName = canonicalName(row[i])
-                    players.append(playerName)
+                    playerName = row[i].split("~")[0]
+                    position = row[i].split("~")[1]
+                    players.append((playerName, position))
                 teams.append((teamName, players))
 
         return teams

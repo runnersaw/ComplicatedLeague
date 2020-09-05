@@ -12,8 +12,9 @@ def validateType(transactionType):
 		raise Exception("Fail", "Unexpected transaction type: " + transactionType)
 
 class Transaction:
-	def __init__(self, playerName, teamName, transactionType, amount, yearsAgo):
+	def __init__(self, playerName, position, teamName, transactionType, amount, yearsAgo):
 		self.playerName = playerName
+		self.position = position
 		self.teamName = teamName
 		validateType(transactionType)
 		self.transactionType = transactionType
@@ -23,4 +24,4 @@ class Transaction:
 		self.yearsAgo = yearsAgo
 
 	def __repr__(self):
-		return "Transaction: " + self.playerName + " had " + self.transactionType + " at amount " + str(self.amount) + " to " + self.teamName
+		return "Transaction: " + self.playerName + "-" + self.position + " had " + self.transactionType + " at amount " + str(self.amount) + " to " + self.teamName

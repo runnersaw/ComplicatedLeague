@@ -13,6 +13,6 @@ class CSVWriter:
 			for team in self.teams:
 				writer.writerow([team.name, team.owner])
 				for player in team.players:
-					writer.writerow([player.name, player.position, player.transaction.currentStatus(), player.transaction.draftedYear(), "0", "0"])
+					writer.writerow([player.name, player.position, player.status, player.draftedYear, player.twoYearsAgoCost, player.oneYearAgoCost])
 				writer.writerow([])
 				writer.writerow([])

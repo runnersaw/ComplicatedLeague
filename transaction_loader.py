@@ -18,13 +18,14 @@ class TransactionLoader():
                     continue
                 if len(row) < 3:
                     raise Exception("Fail", "Expected row of length 3, got: " + row)
-                result = self.parseTransaction(row[2])
+                result = self.parseTransaction(row[3])
                 if result is None:
                     continue
                 transactionType, amount = result
                 playerName = canonicalName(row[1])
+                position = row[2]
                 teamName = currentTeamName(canonicalName(row[0]))
-                transaction = Transaction(playerName, teamName, transactionType, amount, yearsAgo)
+                transaction = Transaction(playerName, position, teamName, transactionType, amount, yearsAgo)
                 transactions.append(transaction)
 
         return transactions

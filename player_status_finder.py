@@ -1,3 +1,4 @@
+from salary_raise import *
 from transaction import DROP, PICKUP, TRADE
 
 # Statuses
@@ -11,30 +12,38 @@ EXTENDED_EXTENDABLE = "EXTENDED_EXTENDABLE"
 EXTENDED_END_OF_CONTRACT = "EXTENDED_END_OF_CONTRACT"
 
 class PlayerStatusFinder:
-    def __init__(self, playerName):
+    def __init__(self, playerName, position):
         self.playerName = playerName
+        self.position = position
 
-    def findStatus(self, keepers, oneYearAgoTransactions, twoYearsAgoTransactions, threeYearsAgoTransactions, oneYearAgoDraft, twoYearsAgoDraft, threeYearsAgoDraft):
+    """ Returns (status, yearDrafted, twoYearsAgoCost, oneYearAgoCost) """
+    def findStatus(self, currentYear, keepers, oneYearAgoTransactions, twoYearsAgoTransactions, threeYearsAgoTransactions, oneYearAgoDraft, twoYearsAgoDraft, threeYearsAgoDraft):
         transaction = self.findTransaction(oneYearAgoTransactions)
         if transaction is not None:
-            return self.statusForTransaction(transaction, 1)
+            status = self.statusForTransaction(transaction, 1)
+            return (self.statusRepresentation(status), "", "", transaction.amount)
         draft = self.findDraft(oneYearAgoDraft)
         if draft is not None:
-            return self.statusForDraft(draft, 1, keepers)
+            status = self.statusForDraft(draft, 1, keepers)
+            return (self.statusRepresentation(status), str(currentYear - 1), "", draft.amount)
 
         transaction = self.findTransaction(twoYearsAgoTransactions)
         if transaction is not None:
-            return self.statusForTransaction(transaction, 2)
+            status = self.statusForTransaction(transaction, 2)
+            return (self.statusRepresentation(status), "", transaction.amount, applyOneYearExtensionRaise(transaction.amount))
         draft = self.findDraft(twoYearsAgoDraft)
         if draft is not None:
-            return self.statusForDraft(draft, 2, keepers)
+            status = self.statusForDraft(draft, 2, keepers)
+            return (self.statusRepresentation(status), str(currentYear - 2), draft.amount, applyOptionPickedUpRaise(draft.amount))
 
         transaction = self.findTransaction(threeYearsAgoTransactions)
         if transaction is not None:
-            return self.statusForTransaction(transaction, 3)
+            status = self.statusForTransaction(transaction, 3)
+            raise Exception("Fail", "Cannot have most recent waiver pickup be 3 years ago")
         draft = self.findDraft(threeYearsAgoDraft)
         if draft is not None:
-            return self.statusForDraft(draft, 3, keepers)
+            status = self.statusForDraft(draft, 3, keepers)
+            raise Exception("Fail", "Need to implement one/two year extension differentiation")
 
     """ Transactions must be sorted! """
     def findTransaction(self, transactions):
@@ -42,7 +51,7 @@ class PlayerStatusFinder:
             return None
         for transaction in transactions:
             # Ignore trades - they don't affect contracts.
-            if transaction.playerName == self.playerName and transaction.transactionType != TRADE:
+            if transaction.playerName == self.playerName and transaction.position == self.position and transaction.transactionType != TRADE:
                 return transaction
         return None
 
@@ -50,7 +59,7 @@ class PlayerStatusFinder:
         if draftEntries is None:
             return None
         for draftEntry in draftEntries:
-            if draftEntry.playerName == self.playerName:
+            if draftEntry.playerName == self.playerName and draftEntry.position == self.position:
                 return draftEntry
         return None
 
